@@ -34,55 +34,65 @@ if (isset($_SESSION["userid"])) {
 
 </head>
 
-<body>
+<body class="bg">
 	<input type="hidden" id="userid" name="userid" value="<?php echo $userid ?>">
 
 
-	<div class="container" style="margin-left: auto; margin-right: auto; margin-top: 32px;">
 
-		<div class="row" style="margin-top: 32px;">
-			<div class="col-md-8 col-md-offset-2">
-				<div class="alert alert-success" role="alert">
-					<h4>TODO List Management</h4>
+	<div class="container myContainer" style="margin-top: 32px; margin-bottom: 32px;">
+
+		<div class="mainContent" >
+
+			<div style="display: flex; justify-content: center; align-self: center; align-items: center;">
+				<img src="static/logo.png" style="margin: 8px ;">
+			</div>
+
+			<div class="row" style="margin-top: 16px;">
+				<div class="col-md-8 col-md-offset-2">
+					<div class="alert alert-success" role="alert">
+						<h4>TODO List Management Web Application</h4>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2">
+					<div class="input-group">
+						<input type="text" class="form-control" id="txtNewItem" placeholder="Description of New Item">
+						<span class="input-group-btn">
+							<button class="btn btn-primary" id="addButton" onclick="insertItem();" type="button">Add New</button>
+						</span>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row" style="margin-top: 32px;">
+				<div id="list" class="col-md-8 col-md-offset-2">
+
+					<table class="table" id=todoListTable>
+
+						<thead>
+
+							<th class="col">ID</th>
+							<th class="col">Status</th>
+							<th class="col">Title</th>
+							<th class="col">
+								<div class="pull-right">Action</div>
+							</th>
+
+						</thead>
+
+						<tbody id="mytable">
+
+						</tbody>
+					</table>
+
 				</div>
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-md-8 col-md-offset-2">
-				<div class="input-group">
-					<input type="text" class="form-control" id="txtNewItem" placeholder="Description of New Item">
-					<span class="input-group-btn">
-						<button class="btn btn-primary" id="addButton" onclick="insertItem();" type="button">Add New</button>
-					</span>
-				</div>
-			</div>
-		</div>
 
-
-		<div class="row" style="margin-top: 32px;">
-			<div id="list" class="col-md-8 col-md-offset-2">
-
-				<table class="table" id=todoListTable>
-
-					<thead>
-
-						<th class="col">ID</th>
-						<th class="col">Status</th>
-						<th class="col">Title</th>
-						<th class="col">
-						<div class="pull-right">Action</div>
-						</th>
-
-					</thead>
-
-					<tbody id="mytable">
-	
-					</tbody>
-				</table>
-
-			</div>
-		</div>
 
 	</div>
 
