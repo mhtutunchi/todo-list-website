@@ -34,18 +34,33 @@ if (isset($_SESSION["userid"])) {
 
 </head>
 
+
+
 <body class="bg">
+
+
 	<input type="hidden" id="userid" name="userid" value="<?php echo $userid ?>">
 
-
-
 	<div class="container myContainer" style="margin-top: 32px; margin-bottom: 32px;">
-
-		<div class="mainContent" >
+	
+		<div class="mainContent">
+			
 
 			<div style="display: flex; justify-content: center; align-self: center; align-items: center;">
 				<img src="static/logo.png" style="margin: 8px ;">
 			</div>
+
+			<div class="row">
+				<div class="col-md-offset-7 col-xs-6 col-md-3">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Search" id="txtSearch" />
+						<div class="input-group-btn">
+							<button class="btn btn-primary" onclick="search(txtSearch.value);" type="submit">Search</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
 
 			<div class="row" style="margin-top: 16px;">
 				<div class="col-md-8 col-md-offset-2">
@@ -55,6 +70,7 @@ if (isset($_SESSION["userid"])) {
 				</div>
 			</div>
 
+
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2">
 					<div class="input-group">
@@ -63,14 +79,19 @@ if (isset($_SESSION["userid"])) {
 							<button class="btn btn-primary" id="addButton" onclick="insertItem();" type="button">Add New</button>
 						</span>
 					</div>
+
+					<div style="margin-top: 32px ;">
+						<input type="checkbox" id="filter" name="filter" value="no">
+						<label for="filter">Filter: Show only done items</label><br>
+					</div>
 				</div>
 			</div>
 
 
-			<div class="row" style="margin-top: 32px;">
+			<div class="row" style="margin-top: 8px;">
 				<div id="list" class="col-md-8 col-md-offset-2">
 
-					<table class="table" id=todoListTable>
+					<table class="table" id="todoListTable">
 
 						<thead>
 
@@ -83,7 +104,8 @@ if (isset($_SESSION["userid"])) {
 
 						</thead>
 
-						<tbody id="mytable">
+						
+						<tbody id="mytable" >
 
 						</tbody>
 					</table>

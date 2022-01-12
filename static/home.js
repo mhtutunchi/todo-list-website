@@ -7,14 +7,24 @@ String.prototype.replaceAll = function (search, replacement) {
 };
 
 
-function loadMyTodos() {
-    $("#mytable").html("");
+function loadMyTodos(searchText,filter) {
+
+    var apiEndpoint='/api.php?action=get&userid=' + userid;
+    if (!(searchText === undefined || searchText=="")) {
+        apiEndpoint+="&search="+searchText;
+    }
+    if (!(filter === undefined)) {
+        apiEndpoint+="&filter=1";
+    }
 
     $.ajax({
-        url: '/api.php?action=get&userid=' + userid,
+        url:apiEndpoint ,
         async: true,
         complete: function (response) {
 
+            $("#mytable").html("");
+
+            
             var jsonData = JSON.parse(response.responseText);
 
 
@@ -49,6 +59,8 @@ function loadMyTodos() {
 
                 newRowContent += '</tr>';
                 $("#mytable").append(newRowContent);
+
+                
             }
 
         },
@@ -183,5 +195,33 @@ $('body').on('change', '.status', function () {
 
 
 
+$("#filter").change(function() {
+    if(this.checked) {
+        loadMyTodos(document.getElementById("txtSearch").value,true)
+    }
+    else{
+        loadMyTodos(document.getElementById("txtSearch").value,undefined)
+    }
+});
+
+function search(text)
+{
+    if (text!="")
+    {
+        if  ($("#filter").is(":checked")){
+            loadMyTodos(text,true);
+        }else{
+            loadMyTodos(text);
+        }
+    }else{
+        loadMyTodos();
+    }
+    
+}
+
+
+
 loadMyTodos();
+
+$("#txtSearch").val("");
 
