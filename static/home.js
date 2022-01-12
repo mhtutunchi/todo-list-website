@@ -1,43 +1,57 @@
 
+// Get id of signed in user
 var userid = $("#userid").val();
 
+// An extension function for string replaceAll
 String.prototype.replaceAll = function (search, replacement) {
     var target = this;
     return target.split(search).join(replacement);
 };
 
+// Alertify framework config
+alertify.defaults.transition = "slide";
+alertify.defaults.theme.ok = "btn btn-primary";
+alertify.defaults.theme.cancel = "btn btn-danger";
+alertify.defaults.theme.input = "form-control";
 
-function loadMyTodos(searchText,filter) {
 
-    var apiEndpoint='/api.php?action=get&userid=' + userid;
-    if (!(searchText === undefined || searchText=="")) {
-        apiEndpoint+="&search="+searchText;
+function loadMyTodos(searchText, filter) {
+    /*
+        a function that is used to clear current content of TODOs table and
+        load desired content from server.
+        ------------------
+        Parameters :
+            searchText (Optional) : string
+            filter (Optional) : any
+        ------------------
+        Return type : void
+    */
+    var apiEndpoint = '/api.php?action=get&userid=' + userid;
+    if (!(searchText === undefined || searchText == "")) {
+        apiEndpoint += "&search=" + searchText;
     }
-    if (!(filter === undefined)) {
-        apiEndpoint+="&filter=1";
+    if ((!(filter === undefined)) || $("#filter").is(":checked")) {
+        apiEndpoint += "&filter=1";
     }
 
+    // Ajax call to get content
     $.ajax({
-        url:apiEndpoint ,
+        url: apiEndpoint,
         async: true,
         complete: function (response) {
 
             $("#mytable").html("");
 
-            
+
             var jsonData = JSON.parse(response.responseText);
 
-
+            // Add rows to table
             for (var i = 0; i < jsonData.length; i++) {
-
                 var newRowContent = '<tr>';
 
                 var id = jsonData[i].id;
                 var desc = jsonData[i].description;
                 var status = String(jsonData[i].status);
-
-                // ID Column
-                newRowContent += '<td class="col">$id</td>';
 
                 // Status Column
                 newRowContent += '<td class="col">';
@@ -58,9 +72,9 @@ function loadMyTodos(searchText,filter) {
                 newRowContent = newRowContent.replaceAll("$id", id).replaceAll("$desc", desc);
 
                 newRowContent += '</tr>';
+
                 $("#mytable").append(newRowContent);
 
-                
             }
 
         },
@@ -74,25 +88,34 @@ function loadMyTodos(searchText,filter) {
 
 function insertItem() {
 
-    var val = document.getElementById("txtNewItem").value;
-    if (val.length < 1) {
+    /*
+        a function that is used to add new TODO from input.
+        ------------------
+        Parameters : None
+        ------------------
+        Return type : void
+    */
+
+    // Check for todo description text
+    var new_desc = document.getElementById("txtNewItem").value;
+    if (new_desc.length < 1) {
         alertify.error("Item description connot be empty!");
         return false;
     } else {
 
-        var new_desc = document.getElementById("txtNewItem").value;
-        document.getElementById("txtNewItem").value = "";
+        // Ajax call to insert data to database
         $.ajax({
             url: "api.php?action=insert&userid=" + userid + "&desc=" + new_desc,
             complete: function (response) {
                 var status = JSON.parse(response.responseText);
-                // console.log(response);
                 if (status.status == "success") {
                     alertify.success("New item has been added successfully");
                 } else if (status.status == "error") {
                     alertify.error("Error while adding the item");
                 }
-                loadMyTodos(); //  reload the todo list from database
+                // reload the table
+                loadMyTodos(); 
+                document.getElementById("txtNewItem").value = "";
             },
             error: function () {
                 alertify.error("Error while connecting from database!");
@@ -106,44 +129,73 @@ function insertItem() {
 
 
 function deleteItem(id) {
-    alertify.confirm("Are you sure to delete this item?", function (e) {
-        if (e) {
-            $.ajax({
-                url: 'api.php?action=delete&id=' + id,
-                complete: function (response) {
-                    var status = JSON.parse(response.responseText);
-                    if (status.status == "success") {
-                        alertify.success("Item Deleted !");
-                        loadMyTodos();
-                    } else if (status.status == "error") {
-                        alertify.error("Error while deleting the item!");
-                    }
-                },
-                error: function () {
-                    alertify.error("Error while connecting from database!");
-                },
-            });
-        }
-    });
+    /*
+        a function that is used to delete a TODO.
+        ------------------
+        Parameters : 
+            id : int
+        ------------------
+        Return type : void
+    */
+
+    // Confirm...
+    alertify.confirm('Delete item', 'Are you sure to delete this item?', function () {
+        // Ajax call to delete TODO from database
+        $.ajax({
+            url: 'api.php?action=delete&id=' + id,
+            complete: function (response) {
+                var status = JSON.parse(response.responseText);
+                if (status.status == "success") {
+                    alertify.success("Item Deleted !");
+                    // reload the table
+                    loadMyTodos();
+                } else if (status.status == "error") {
+                    alertify.error("Error while deleting the item!");
+                }
+            },
+            error: function () {
+                alertify.error("Error while connecting from database!");
+            },
+        });
+
+    }
+        , function () { });
+
 }
 
 
 function editItem(id, desc) {
+
+    /*
+        a function that is used to edit a TODO.
+        ------------------
+        Parameters : 
+            id : int
+            desc (Current description of selected TODO) : string 
+        ------------------
+        Return type : void
+    */
+
+    // Get new description 
     alertify.prompt("Edit", "New todo description :", desc, function (e, str) {
         if (e) {
             if (str.length > 0) {
+
+                // get status of TODO
                 if (document.getElementById('c' + String(id)).checked) {
                     var stat = 1;
                 } else {
                     var stat = 0;
                 }
+                // Ajax call to edit TODO in database
                 $.ajax({
 
                     url: 'api.php?action=edit&id=' + id + "&new_desc=" + str + "&new_status=" + stat,
                     complete: function (response) {
-                        var status = JSON.parse(response.responseText); //parsing status from response received from php
+                        var status = JSON.parse(response.responseText); 
                         if (status.status == "success") {
                             alertify.success("Information updated successfully");
+                            // reload the table
                             loadMyTodos();
 
                         } else if (status.status == "error") {
@@ -163,6 +215,9 @@ function editItem(id, desc) {
 }
 
 
+/* an Event Handler for every status CheckBox that belongs to a TODO
+   That updates the status of item in Database
+*/
 $('body').on('change', '.status', function () {
 
     var tid = parseInt(String(this.id).replace("c", ""));
@@ -173,6 +228,7 @@ $('body').on('change', '.status', function () {
         var stat = 0;
     }
 
+    // Ajax call for updating status of selected item in database
     $.ajax({
         url: 'api.php?action=edit&id=' + tid + "&new_status=" + stat,
         async: true,
@@ -180,8 +236,6 @@ $('body').on('change', '.status', function () {
             var status = JSON.parse(response.responseText);
             if (status.status == "success") {
                 alertify.success("Status changed successfully!");
-                loadMyTodos();
-
 
             } else if (status.status == "error") {
                 alertify.error("Error while editing the item !");
@@ -194,33 +248,38 @@ $('body').on('change', '.status', function () {
 });
 
 
-
-$("#filter").change(function() {
-    if(this.checked) {
-        loadMyTodos(document.getElementById("txtSearch").value,true)
+// an Event Handler for filter checkbox that reloads the database according to the filter
+$("#filter").change(function () {
+    if (this.checked) {
+        loadMyTodos(document.getElementById("txtSearch").value, true)
     }
-    else{
-        loadMyTodos(document.getElementById("txtSearch").value,undefined)
+    else {
+        loadMyTodos(document.getElementById("txtSearch").value, undefined)
     }
 });
 
-function search(text)
-{
-    if (text!="")
-    {
-        if  ($("#filter").is(":checked")){
-            loadMyTodos(text,true);
-        }else{
+
+function search(text) {
+    /*
+        a function that is used reload the table data according to the search keyword and filter
+        ------------------
+        Parameters : 
+            text : string
+        ------------------
+        Return type : void
+    */
+    if (text != "") {
+        if ($("#filter").is(":checked")) {
+            loadMyTodos(text, "1");
+        } else {
             loadMyTodos(text);
         }
-    }else{
+    } else {
         loadMyTodos();
     }
-    
 }
 
-
-
+// get the TODOs table at page load
 loadMyTodos();
 
 $("#txtSearch").val("");

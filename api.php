@@ -1,19 +1,18 @@
 <?php
 
+/*
+    the Api endpoints to communnicate between web application and database
+*/
+
 require_once 'db.php';
-
-
 $action = $_GET["action"];
-
 header('Content-Type: application/json; charset=utf-8');
 
-
-if ($action == 'get') // Read
+if ($action == 'get') // Read TODOs from database
 {
     $userid = $_GET["userid"];
 
     $query = "SELECT * FROM todo WHERE author={$userid}";
-
 
     if (isset($_GET["search"])) {
         $s = strval($_GET["search"]);
@@ -31,7 +30,7 @@ if ($action == 'get') // Read
     }
     print json_encode($rows);
 
-} else if ($action == 'insert') // Create
+} else if ($action == 'insert') // Create a TODO in database
 {
     $userid = $_GET["userid"];
     $desc=$_GET['desc'];
@@ -43,7 +42,8 @@ if ($action == 'get') // Read
     }
     print json_encode($response_array);
 } 
-else if ($action == 'edit') // Update
+
+else if ($action == 'edit') // Update a TODO in database
 {
     $id = $_GET["id"];
     
@@ -63,7 +63,7 @@ else if ($action == 'edit') // Update
     }
     print json_encode($response_array);
 }
-if ($action == 'delete') // Delete
+if ($action == 'delete') // Delete a TODO from database
 {
     $id = $_GET["id"];
     if(mysqli_query($conn,"DELETE FROM todo WHERE id={$id}")){

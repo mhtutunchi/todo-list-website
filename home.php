@@ -1,5 +1,8 @@
 <?php
+// Import database connection
 require_once 'db.php';
+
+// Start session
 if (session_status() === PHP_SESSION_NONE) {
 	session_start();
 }
@@ -21,16 +24,11 @@ if (isset($_SESSION["userid"])) {
 	<link rel="stylesheet" href="static/styles.css">
 	<link rel="stylesheet" href="static/bootstrap/bootstrap.min.css">
 	<link rel="stylesheet" href="static/alertify/alertify.min.css">
-	<link rel="stylesheet" href="static/alertify/default.min.css">
-	<link rel="stylesheet" href="static/alertify/semantic.min.css">
 	<link rel="stylesheet" href="static/alertify/bootstrap.min.css">
-	<!--
-	<link rel="stylesheet" href="static/font-awesome/font-awesome.min.css">
-	-->
 	<script src="static/jquery/jquery-3.6.0.min.js"></script>
 	<script src="static/bootstrap/bootstrap.min.js"></script>
 	<script src="static/alertify/alertify.min.js"></script>
-	<meta charset="utf-8">
+	<link rel="icon" type="image/x-icon" href="static/favicon.ico">
 
 </head>
 
@@ -42,15 +40,26 @@ if (isset($_SESSION["userid"])) {
 	<input type="hidden" id="userid" name="userid" value="<?php echo $userid ?>">
 
 	<div class="container myContainer" style="margin-top: 32px; margin-bottom: 32px;">
-	
-		<div class="mainContent">
-			
 
-			<div style="display: flex; justify-content: center; align-self: center; align-items: center;">
-				<img src="static/logo.png" style="margin: 8px ;">
+		<div class="mainContent">
+
+			<div class="row" style="margin-top: 16px">
+				<div class="col-md-8 col-md-offset-2">
+					<a href="/logout.php" style="text-decoration: underline;">&lt; Sign Out</a>
+				</div>
 			</div>
 
+
+
 			<div class="row">
+
+				<div class="col-md-offset-2 col-xs-6 col-md-3">
+					<div style="display: flex;">
+						<img src="static/logo.png" style="margin: 8px ;width: 128px; height: 64px;">
+					</div>
+				</div>
+
+
 				<div class="col-md-offset-7 col-xs-6 col-md-3">
 					<div class="input-group">
 						<input type="text" class="form-control" placeholder="Search" id="txtSearch" />
@@ -59,10 +68,12 @@ if (isset($_SESSION["userid"])) {
 						</div>
 					</div>
 				</div>
+
+
 			</div>
 
 
-			<div class="row" style="margin-top: 16px;">
+			<div class="row" style="margin-top: 8px;">
 				<div class="col-md-8 col-md-offset-2">
 					<div class="alert alert-success" role="alert">
 						<h4>TODO List Management Web Application</h4>
@@ -94,18 +105,15 @@ if (isset($_SESSION["userid"])) {
 					<table class="table" id="todoListTable">
 
 						<thead>
-
-							<th class="col">ID</th>
-							<th class="col">Status</th>
-							<th class="col">Title</th>
-							<th class="col">
+							<th class="col-md-2">Status</th>
+							<th class="col-md-8">Title</th>
+							<th class="col-md-2">
 								<div class="pull-right">Action</div>
 							</th>
 
 						</thead>
 
-						
-						<tbody id="mytable" >
+						<tbody id="mytable">
 
 						</tbody>
 					</table>
