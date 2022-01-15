@@ -16,5 +16,5 @@ Before running website, do the following steps:
 2. Edit `db.php` file and put your MySQL database connection details. 
 
 
-written by Mohammadhossein and Sahand
+written by Mohammadhossein and Sahand for IE course
 
