@@ -15,3 +15,6 @@ Before running website, do the following steps:
 1. Install MySQL database and set up application's required tables by running `tables.sql` file.
 2. Edit `db.php` file and put your MySQL database connection details. 
 
+
+written by Mohammadhossein and Sahand
+
